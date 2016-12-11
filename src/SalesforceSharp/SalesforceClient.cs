@@ -45,8 +45,11 @@ namespace SalesforceSharp
             m_restClient = restClient;
             ApiVersion = "v28.0";
             m_deserializer = new DynamicJsonDeserializer();
+
             genericJsonDeserializer = new GenericJsonDeserializer(new SalesforceContractResolver(false));
             updateJsonSerializer = new GenericJsonSerializer(new SalesforceContractResolver(true));
+
+
         }
         #endregion
 
@@ -77,7 +80,14 @@ namespace SalesforceSharp
         /// The instance URL.
         /// </value>
         public string InstanceUrl { get; private set; }
+        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ApiUsageInfo {private set; get; }
         #endregion
+
 
         #region Methods
         /// <summary>
@@ -522,6 +532,13 @@ namespace SalesforceSharp
             {
                 var ex = new FormatException(string.Format("{0}{1}{2}", response.ErrorException.Message, Environment.NewLine, response.Content));
                 throw ex;
+            }
+
+            if (response != null && response.Headers != null)
+            {
+                var limits = response.Headers.FirstOrDefault(a => a.Name == "Sforce-Limit-Info");
+                if(limits!=null && limits.Value!=null)
+                    ApiUsageInfo = limits.Value.ToString();
             }
         }
         #endregion

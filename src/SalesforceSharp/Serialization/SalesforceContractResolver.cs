@@ -32,7 +32,6 @@ namespace SalesforceSharp.Serialization
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
             var properties = base.CreateProperties(type, memberSerialization);
-
             return properties.Where(x=> x != null).ToList();
         }
 
@@ -48,6 +47,10 @@ namespace SalesforceSharp.Serialization
             var jsonProp = base.CreateProperty(member, memberSerialization);
 
             var sfAttrs = member.GetCustomAttributes(typeof(SalesforceAttribute), true);
+
+            //excluir objetos con atributo XmlIgnore
+            if (member.GetCustomAttributes(false).Any(a => a.ToString().Contains("XmlIgnore")))
+                return null;
 
             // if there are no attr then no need to process any further
             if (!sfAttrs.Any()) return jsonProp;

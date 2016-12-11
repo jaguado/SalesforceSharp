@@ -14,7 +14,7 @@ namespace SalesforceSharp.Serialization
 
         public string Serialize(object obj)
         {
-            return JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings(){ContractResolver = salesForceContractResolver});
+            return JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings(){ContractResolver = salesForceContractResolver, NullValueHandling = NullValueHandling.Ignore });
         }
 
         public string RootElement { get; set; }
